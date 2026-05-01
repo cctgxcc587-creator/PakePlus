@@ -7,10 +7,10 @@
             content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
         <script>
-            let pwdList = ['pakeplus', '123456']
+            let pwdList = ['pakeplus', 'startPwd']
             // 先清空 localStorage
             // localStorage.clear()
-            if (localStorage.getItem('pwdOk') === '1') {
+            if (localStorage.getItem('appid') === '1') {
                 window.location.replace('https://pakeplus.com/')
             }
         </script>
@@ -208,14 +208,14 @@
                 } else {
                     document.body.classList.add('pwdTheme')
                 }
-                document.getElementById('card').classList = 'pwdStyle'
+                document.getElementById('card').classList.add('pwdStyle')
                 // 设置标题
                 document.title = 'pwdTitle'
                 document.getElementById('title').textContent = 'pwdTitle'
                 document.getElementById('code').placeholder = 'pwdPlace'
+                document.getElementById('button').textContent = 'pwdBtn'
                 document.getElementById('tip').textContent = 'pwdTip'
                 document.getElementById('error').textContent = 'pwdError'
-                document.getElementById('button').textContent = 'pwdBtn'
                 // 输入时清除错误提示
                 const codeInput = document.getElementById('code')
                 const error = document.getElementById('error')
@@ -244,9 +244,9 @@
                 setTimeout(() => {
                     if (pwdList.includes(val)) {
                         if ('startMethod' === 'oncePwd') {
-                            localStorage.setItem(currentProject.appid, '1')
+                            localStorage.setItem('appid', '1')
                         } else {
-                            localStorage.setItem(currentProject.appid, '0')
+                            localStorage.setItem('appid', '0')
                         }
                         window.location.replace('https://pakeplus.com/')
                     } else {

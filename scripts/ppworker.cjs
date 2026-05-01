@@ -86,6 +86,7 @@ const isAlphanumeric = (showName) => {
 const updateCargoToml = async (
     name,
     version,
+    author,
     desc,
     debug,
     single,
@@ -106,6 +107,7 @@ const updateCargoToml = async (
     let newCargoToml = cargoToml
         .replace('PakePlus', name)
         .replace('0.0.1', version)
+        .replace('1024xiaoshen', author)
         .replace('Project Desc', desc)
         .replace('"protocol-asset"', features)
     if (single) {
@@ -142,8 +144,33 @@ const updateTauriConfig = (showName, version, id, tauriApi) => {
     console.log('updateTauriConfig success')
 }
 
+// update index.html
+const updateIndexHtml = (
+    startMethod,
+    startPwd,
+    pwdTitle,
+    pwdBtn,
+    pwdPlace,
+    pwdTip,
+    pwdError
+) => {
+    console.log('updateIndexHtml......')
+    const indexHtmlPath = path.join(__dirname, '../src/index.html')
+    const indexHtml = fs.readFileSync(indexHtmlPath, 'utf-8')
+    const newIndexHtml = indexHtml
+        .replace('startMethod', startMethod)
+        .replace('startPwd', startPwd)
+        .replace('pwdTitle', pwdTitle)
+        .replace('pwdBtn', pwdBtn)
+        .replace('pwdPlace', pwdPlace)
+        .replace('pwdTip', pwdTip)
+        .replace('pwdError', pwdError)
+    fs.writeFileSync(indexHtmlPath, newIndexHtml)
+    console.log('updateIndexHtml success')
+}
+
 // update init.rs
-const updateInitRs = (isHtml, winState, winConfig) => {
+const updateInitRs = (isHtml, startMethod, winState, winConfig) => {
     console.log('updateInitRs......')
     const initRsPath = path.join(__dirname, '../src-tauri/src/utils/init.rs')
     const initRs = fs.readFileSync(initRsPath, 'utf-8')
@@ -151,6 +178,12 @@ const updateInitRs = (isHtml, winState, winConfig) => {
     winConfig.visible = false
     if (isHtml) {
         winConfig.url = 'index.html'
+    } else if (startMethod === 'oncePwd') {
+        winConfig.url = 'index.html'
+    } else if (startMethod === 'oncePwd') {
+        winConfig.url = 'index.html'
+    } else {
+        console.log('use winConfig url')
     }
     // 更新 init.rs
     const newInitRs = initRs
@@ -226,6 +259,14 @@ const main = async () => {
         isHtml,
         single,
         state,
+        author,
+        startMethod,
+        startPwd,
+        pwdTitle,
+        pwdBtn,
+        pwdPlace,
+        pwdTip,
+        pwdError,
     } = ppconfig.desktop
     // get windows config
     const winConfig = ppconfig.more.windows
@@ -238,12 +279,30 @@ const main = async () => {
     const icnsOutputPath = path.join(__dirname, icnsPath)
     // 创建 icon
     await createIcon(inputPath, tempOutputPath, icnsOutputPath)
+    // 更新 index.html
+    updateIndexHtml(
+        startMethod,
+        startPwd,
+        pwdTitle,
+        pwdBtn,
+        pwdPlace,
+        pwdTip,
+        pwdError
+    )
     // 更新 cargo.toml
-    updateCargoToml(name, version, desc, debug, single, winConfig.proxyUrl)
+    updateCargoToml(
+        name,
+        version,
+        author,
+        desc,
+        debug,
+        single,
+        winConfig.proxyUrl
+    )
     // 更新 tauri.conf.json
     updateTauriConfig(showName, version, id, tauriApi)
     // 更新 init.rs
-    updateInitRs(isHtml, state, winConfig)
+    updateInitRs(isHtml, startMethod, state, winConfig)
     // 更新 lib.rs
     updateLibRs(single)
     // set github env

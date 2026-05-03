@@ -234,8 +234,7 @@
                 document.getElementById('button').textContent =
                     currentProject[previewType].pwdBtn || '验证'
                 // 设置密码列表
-                pwdList.push(currentProject[previewType].startPwd)
-
+                pwdList.push(currentProject[previewType].startPwd || '123456')
                 // 输入时清除错误提示
                 const codeInput = document.getElementById('code')
                 const error = document.getElementById('error')
